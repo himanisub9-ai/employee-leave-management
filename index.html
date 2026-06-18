@@ -1,0 +1,459 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeaveIQ — AI-Powered Leave & Workload Balancing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">LeaveIQ <span>by AI</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-cta" onclick="openLeaveModal()">+ Request Leave</button>
+    <button class="nav-cta-ghost" onclick="scrollToCalendar()">📅 View Calendar</button>
+  </div>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#how" onclick="closeMenu()">How it works</a>
+  <a href="#features" onclick="closeMenu()">Features</a>
+  <a href="#calendar" onclick="closeMenu()">Calendar</a>
+  <button class="btn-p" style="margin-top:0.5rem" onclick="openLeaveModal();closeMenu()">+ Request Leave</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="badge"><span class="dot"></span> AI-Powered HR Agent · Live</div>
+      <h1>Leave without <em>guilt.</em><br>Coverage in <em>minutes.</em></h1>
+      <p>LeaveIQ automatically checks team calendars, active projects, and availability — then generates an impact score and coverage plan so nothing falls through the cracks.</p>
+      <div class="hero-btns">
+        <button class="btn-p" onclick="openLeaveModal()">
+          <span class="btn-icon">✦</span> Request Leave Now
+        </button>
+        <button class="btn-g" onclick="scrollToCalendar()">
+          📅 View Team Calendar
+        </button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><span class="trust-dot"></span> Real-time sync</div>
+        <div class="trust-item"><span class="trust-dot"></span> Multi-user</div>
+        <div class="trust-item"><span class="trust-dot"></span> Auto coverage</div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <!-- Live stats ticker -->
+      <div class="live-ticker">
+        <span class="ticker-dot"></span>
+        <span id="tickerText">Monitoring 5 team members · 0 leaves active</span>
+      </div>
+      <!-- Demo card -->
+      <div class="demo-card">
+        <div class="demo-card-glow"></div>
+        <div class="dc-label">Live Leave Impact Assessment</div>
+        <div class="dc-name" id="heroCardName">Team Calendar</div>
+        <div class="dc-sub" id="heroCardSub">Real-time leave tracking</div>
+        <div class="impact-pill imp-med" id="heroImpactPill">⚡ LIVE TRACKING</div>
+        <div id="heroCardRows">
+          <div class="dc-row"><span>Active Leaves</span><span class="g" id="heroActiveLeaves">0</span></div>
+          <div class="dc-row"><span>Coverage Planned</span><span class="g">Auto ✓</span></div>
+          <div class="dc-row"><span>Sessions Protected</span><span class="g">100%</span></div>
+          <div class="dc-row"><span>Last Request</span><span class="g" id="heroLastRequest">—</span></div>
+        </div>
+        <div class="dc-footer" id="heroCardFooter">Submit a leave request to see real-time impact assessment.</div>
+        <div class="tools-row">
+          <span class="tool-tag">Live Data</span>
+          <span class="tool-tag">Auto-sync</span>
+          <span class="tool-tag">AI Scoring</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num" data-target="0">0</div>
+      <div class="stat-label">Student sessions cancelled</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="3" data-suffix="min">0</div>
+      <div class="stat-label">Average coverage planning time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="98" data-suffix="%">0</div>
+      <div class="stat-label">Leave approval accuracy</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="200" data-suffix="+">0</div>
+      <div class="stat-label">Teams using LeaveIQ</div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM CALENDAR SECTION -->
+<section id="calendar" class="calendar-section">
+  <div class="section-inner">
+    <div class="section-label">Live Team Calendar</div>
+    <div class="section-title">Who's in, who's out</div>
+    <p class="section-sub">Real-time view of all approved leaves. Updates instantly when a new request is submitted.</p>
+
+    <div class="calendar-controls">
+      <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-month-display" id="calMonthDisplay">May 2026</div>
+      <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+      <div class="cal-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:var(--amber)"></span>On Leave</span>
+        <span class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Today</span>
+        <span class="leg-item"><span class="leg-dot" style="background:var(--red)"></span>Multiple Out</span>
+      </div>
+    </div>
+
+    <div class="big-calendar" id="bigCalendar"></div>
+
+    <!-- Leave list below calendar -->
+    <div class="leave-list-wrap">
+      <div class="leave-list-header">
+        <h3>Upcoming & Active Leaves</h3>
+        <button class="btn-p" style="padding:0.5rem 1.2rem;font-size:0.85rem" onclick="openLeaveModal()">+ New Request</button>
+      </div>
+      <div id="leaveListContainer">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>No leave requests yet. Be the first to submit one!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="how-section">
+  <div class="section-inner">
+    <div class="section-label">Process</div>
+    <div class="section-title">How LeaveIQ works</div>
+    <p class="section-sub">Four intelligent steps from leave request to approved coverage plan — all automated.</p>
+    <div class="how-grid">
+      <div class="steps">
+        <div class="step" onclick="setStep(0)">
+          <div class="step-num active" id="sn0">1</div>
+          <div class="step-body">
+            <div class="step-title">Receive Leave Request</div>
+            <div class="step-desc">Team member submits leave with dates, reason, and role. LeaveIQ captures all context automatically.</div>
+          </div>
+        </div>
+        <div class="step" onclick="setStep(1)">
+          <div class="step-num" id="sn1">2</div>
+          <div class="step-body">
+            <div class="step-title">Check Calendar & Projects</div>
+            <div class="step-desc">Agent scans batch schedules, active client projects, and upcoming deadlines that overlap the leave window.</div>
+          </div>
+        </div>
+        <div class="step" onclick="setStep(2)">
+          <div class="step-num" id="sn2">3</div>
+          <div class="step-body">
+            <div class="step-title">Score & Find Coverage</div>
+            <div class="step-desc">Generates a Low/Medium/High impact score and recommends the best available team member for coverage.</div>
+          </div>
+        </div>
+        <div class="step" onclick="setStep(3)">
+          <div class="step-num" id="sn3">4</div>
+          <div class="step-body">
+            <div class="step-title">Auto-Draft Handoff & Approve</div>
+            <div class="step-desc">Handoff briefing document is auto-drafted and sent to both parties. Leave is approved instantly.</div>
+          </div>
+        </div>
+      </div>
+      <div class="how-preview">
+        <div class="preview-panel active" id="pp0">
+          <div class="preview-label">Step 1 — Leave Request Received</div>
+          <div class="input-field"><label>Team Member</label><div class="val">Ravi Kumar — Batch Trainer</div></div>
+          <div class="input-field"><label>Leave Dates</label><div class="val">May 14 – May 16, 2026 (3 days)</div></div>
+          <div class="input-field"><label>Reason</label><div class="val">Personal — Family function</div></div>
+          <div class="input-field"><label>Status</label><div class="val" style="color:var(--amber)">⏳ Pending review</div></div>
+        </div>
+        <div class="preview-panel" id="pp1">
+          <div class="preview-label">Step 2 — Calendar & Project Check</div>
+          <div style="font-size:0.8rem;color:var(--text3);margin-bottom:0.6rem;">May 2026 — Batch 4 Schedule</div>
+          <div class="calendar-grid">
+            <div class="cal-day header">M</div><div class="cal-day header">T</div><div class="cal-day header">W</div>
+            <div class="cal-day header">T</div><div class="cal-day header">F</div><div class="cal-day header">S</div><div class="cal-day header">S</div>
+            <div class="cal-day">11</div><div class="cal-day today">12</div><div class="cal-day">13</div>
+            <div class="cal-day leave">14</div><div class="cal-day leave">15</div><div class="cal-day leave">16</div><div class="cal-day">17</div>
+            <div class="cal-day">18</div><div class="cal-day taken">19</div><div class="cal-day avail">20</div>
+            <div class="cal-day avail">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:0.8rem;font-size:0.72rem;">
+            <span style="color:var(--amber)">■ Leave</span><span style="color:var(--red)">■ Busy</span><span style="color:var(--green2)">■ Available</span>
+          </div>
+          <div style="margin-top:0.8rem;font-size:0.8rem;color:var(--text2);">⚠ 1 session detected on Tue May 14 — Batch 4 weekly</div>
+        </div>
+        <div class="preview-panel" id="pp2">
+          <div class="preview-label">Step 3 — Impact Score & Coverage</div>
+          <div class="score-display"><div class="score-num">MED</div><div class="score-label">Impact Level</div></div>
+          <div class="score-factors">
+            <div class="factor"><span style="font-size:0.75rem;color:var(--text3);min-width:90px">Sessions hit</span><div class="factor-bar-wrap"><div class="factor-bar" style="width:33%;background:var(--amber)"></div></div><span style="font-size:0.75rem;color:var(--text2)">1/3</span></div>
+            <div class="factor"><span style="font-size:0.75rem;color:var(--text3);min-width:90px">Projects hit</span><div class="factor-bar-wrap"><div class="factor-bar" style="width:0%"></div></div><span style="font-size:0.75rem;color:var(--green)">None</span></div>
+            <div class="factor"><span style="font-size:0.75rem;color:var(--text3);min-width:90px">Coverage</span><div class="factor-bar-wrap"><div class="factor-bar" style="width:90%"></div></div><span style="font-size:0.75rem;color:var(--green2)">Found</span></div>
+          </div>
+          <div class="coverage-card" style="margin-top:1rem">
+            <div class="person-row">
+              <div class="avatar av-green">PK</div>
+              <div class="person-info"><div class="person-name">Priya Kapoor</div><div class="person-role">Sr. Trainer — available all 3 days</div></div>
+              <span class="match-badge">✓ Best match</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel" id="pp3">
+          <div class="preview-label">Step 4 — Handoff Document Auto-drafted</div>
+          <div class="doc-preview">
+            <div class="doc-header"><div class="doc-icon">📄</div><span>Handoff_Ravi_May14.md — sent to Ravi & Priya</span></div>
+            <div class="doc-line" style="width:70%"></div><div class="doc-line" style="width:90%"></div>
+            <div class="doc-line" style="width:55%"></div><div class="doc-line" style="width:80%"></div><div class="doc-line" style="width:40%"></div>
+          </div>
+          <div style="margin-top:1rem;padding:0.85rem;background:var(--gdim);border:0.5px solid var(--border2);border-radius:10px;font-size:0.82rem;color:var(--green2)">
+            ✓ Leave approved. Both notified. No action needed from manager.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-bg" id="features">
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything your HR team needs</div>
+    <div class="features-grid" style="margin-top:3rem">
+      <div class="feat-card">
+        <div class="feat-icon">📅</div>
+        <div class="feat-title">Smart Calendar Sync</div>
+        <div class="feat-desc">Real-time shared calendar shows all team leaves. Automatically detects conflicts with sessions, standups, and client calls.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Instant Impact Scoring</div>
+        <div class="feat-desc">Low, Medium, or High impact calculated in seconds. Considers session count, project deadlines, team size, and leave history.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤝</div>
+        <div class="feat-title">Coverage Matching</div>
+        <div class="feat-desc">AI finds the best available teammate by role, skill, and workload. No manual coordination needed — suggestions are sent automatically.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📝</div>
+        <div class="feat-title">Auto Handoff Briefings</div>
+        <div class="feat-desc">Generates structured handoff notes with context, student names, and action items. Both parties receive the document instantly.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <div class="feat-title">Zero-friction Approvals</div>
+        <div class="feat-desc">Managers approve with a single click. Low-impact leaves can auto-approve. All decisions logged with full audit trail.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Team Workload Dashboard</div>
+        <div class="feat-desc">See who's overloaded, who has capacity, and how leave patterns affect delivery — all in one real-time view.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-bg">
+  <div class="section-inner">
+    <div class="section-label">Social proof</div>
+    <div class="section-title">Teams love LeaveIQ</div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="quote">"Before LeaveIQ, every leave request meant 3 calls and a spreadsheet. Now it's one click. Coverage is sorted before the manager even sees the request."</div>
+        <div class="testi-person">
+          <div class="testi-avatar av-green">SR</div>
+          <div><div class="testi-name">Sneha Rao</div><div class="testi-role">HR Lead, EdTech startup, Bangalore</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="quote">"We run 12 training batches simultaneously. LeaveIQ has made it possible to approve leaves without the constant fear of dropping a session."</div>
+        <div class="testi-person">
+          <div class="testi-avatar" style="background:var(--adim);color:var(--amber)">MK</div>
+          <div><div class="testi-name">Mohan Krishnan</div><div class="testi-role">Operations Director, Skill Academy</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="quote">"The handoff briefing doc alone saves us 2 hours per leave. My trainers actually feel comfortable taking time off now. That's huge for retention."</div>
+        <div class="testi-person">
+          <div class="testi-avatar" style="background:rgba(248,113,113,0.15);color:var(--red)">AP</div>
+          <div><div class="testi-name">Ananya Pillai</div><div class="testi-role">Founder, CodeBridge Institute</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="section-inner">
+    <h2>Ready for <em>zero guilt</em> leaves?</h2>
+    <p>An AI-powered agent that makes team leave management seamless — built as a college project.</p>
+    <div class="cta-btns">
+      <button class="btn-p" onclick="openLeaveModal()">✦ Request Leave Now</button>
+      <button class="btn-g" onclick="scrollToCalendar()">📅 View Team Calendar</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo" style="font-family:var(--fh);font-size:1.3rem;font-weight:800;color:var(--green)">LeaveIQ <span style="color:var(--text2);font-weight:400">by AI</span></div>
+      <p>AI-powered leave and workload balancing for modern teams. No cancelled sessions, no delayed projects, no guilt.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#calendar">Team Calendar</a>
+    </div>
+    <div class="footer-col">
+      <h4>Team</h4>
+      <a href="#">Ravi Kumar</a>
+      <a href="#">Priya Kapoor</a>
+      <a href="#">Ankit Shah</a>
+      <a href="#">Neha Patel</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 LeaveIQ. All rights reserved.</span>
+    <span>Built with Claude AI · Made in India 🇮🇳</span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     LEAVE REQUEST MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="leaveModal" onclick="handleModalClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">✦ New Leave Request</div>
+        <div class="modal-sub">Fill in your details — coverage will be auto-assigned</div>
+      </div>
+      <button class="modal-close" onclick="closeLeaveModal()">✕</button>
+    </div>
+
+    <form id="leaveForm" onsubmit="submitLeave(event)">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Your Name *</label>
+          <input type="text" id="fName" placeholder="e.g. Ravi Kumar" required>
+        </div>
+        <div class="form-field">
+          <label>Your Role *</label>
+          <select id="fRole" required>
+            <option value="">Select role…</option>
+            <option>Batch Trainer</option>
+            <option>Sr. Trainer</option>
+            <option>Developer</option>
+            <option>Sales Lead</option>
+            <option>Project Manager</option>
+            <option>Designer</option>
+            <option>QA Engineer</option>
+            <option>HR Executive</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Start Date *</label>
+          <input type="date" id="fStart" required>
+        </div>
+        <div class="form-field">
+          <label>End Date *</label>
+          <input type="date" id="fEnd" required>
+        </div>
+        <div class="form-field full">
+          <label>Reason for Leave *</label>
+          <select id="fReason" required>
+            <option value="">Select reason…</option>
+            <option>Personal — Family function</option>
+            <option>Medical — Self</option>
+            <option>Medical — Family</option>
+            <option>Vacation / Travel</option>
+            <option>Emergency</option>
+            <option>Work from home</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Additional Notes</label>
+          <textarea id="fNotes" placeholder="Any context for your manager or coverage person…" rows="3"></textarea>
+        </div>
+        <div class="form-field">
+          <label>Active Sessions This Week</label>
+          <select id="fSessions">
+            <option value="0">None</option>
+            <option value="1">1 Session</option>
+            <option value="3">3 Sessions</option>
+            <option value="5">5+ Sessions</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Active Client Projects</label>
+          <select id="fProjects">
+            <option value="0">None</option>
+            <option value="1">1 Project</option>
+            <option value="2">2+ Projects</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Impact preview inside form -->
+      <div class="form-impact-preview" id="formImpactPreview" style="display:none">
+        <div class="fip-label">Estimated Impact</div>
+        <div class="fip-row">
+          <span class="impact-pill" id="fipPill">—</span>
+          <span class="fip-coverage" id="fipCoverage"></span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-g" onclick="closeLeaveModal()">Cancel</button>
+        <button type="submit" class="btn-p">Submit Request →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
