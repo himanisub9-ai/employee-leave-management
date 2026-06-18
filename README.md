@@ -88,7 +88,7 @@ This project is licensed under the MIT License — see the LICENSE file for deta
 
 👩‍💻 Author
 
-Himani
+Himani Subhod
 GitHub: @himanisub9-ai
 
 
